@@ -114,7 +114,7 @@ class PlannerApp: # класс планера
     def toggle_done(self): # выполенено, поставить галочку
         selected = self.tasks_listbox.curselection()
         if not selected:
-            messagebox.showwarning('Ошибка', 'Выберите задачу')
+            messagebox.showwarning('Ошибка', 'Выберите задачу!')
             return
         task_text = self.tasks_listbox.get(selected[0])
         for i, task in enumerate(self.tasks):
@@ -165,17 +165,16 @@ class PlannerApp: # класс планера
 
     def refresh_listbox(self):
         self.tasks_listbox.delete(0, tk.END)
-
+       # Фильтруем задачи по дате и статусу, если фильтры заданы
         filtered_tasks = [
             task for task in self.tasks
             if (self.current_date_filter is None or task['date'] == self.current_date_filter) and
                (self.current_status_filter is None or task['done'] == self.current_status_filter)
         ]
-
-        # Сортировка по дате
+        # Превращает 'dd-mm-yyyy' в объект datetime, для правильной сортировки по дате
         def date_key(task):
             return datetime.strptime(task['date'], DATE_FORMAT)
-        filtered_tasks.sort(key=date_key)
+        filtered_tasks.sort(key=date_key) # Сортируем задачи по возрастанию даты
 
         for task in filtered_tasks:
             status = '[✔]' if task['done'] else '[ ]'
